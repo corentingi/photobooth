@@ -1,0 +1,43 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "fd8631d67b7c1fab5f477f2781a2592c230f5c4764846a5eaa963b185fe19d44"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_full_version": "3.9.16",
+            "python_version": "3.9"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "gphoto2": {
+            "hashes": [
+                "sha256:0c440b21cbb7faadc50e2b7c9074bbb2ff20acd2547a00ac081371081d0cc99c",
+                "sha256:0f651a0131582f81b4945b91ce047f3394b554118e2047b0ba6ce15febb6b486",
+                "sha256:28ab72611c5e4efdd00daa7d5ef0a4465fadc5af115afef3b6b271692826aa78",
+                "sha256:30f873b70ecad5024cc526a2a4bf7afbd3165127f4c3be045dbae709b705f40b",
+                "sha256:67d539c6bd8d139112a42f786b188801c24ea8971b3fd079c4a7edc446d04b10",
+                "sha256:706cad90cb33c7979f05fa3838381f2b7f906362a1b4c9d101e42852e6e76676",
+                "sha256:93e76c276f9d019bdb35e43404a77803f4ceb143101e70b3919859f08c901da2",
+                "sha256:9846c5fdf3adc34714fdbc7b0e041c9a627fcaa6a5f07b3fd4a68b182ddee3f7",
+                "sha256:9dc2f94b777099636e3fb36012c4583d634ae3a37cd6d65316333a5961fc6564",
+                "sha256:c38b59eb7762dcce63e4cff9806f19c13d73e668140d138e33a28c5bf6e8fcaa",
+                "sha256:ef84d5cab566e1040366a6699d69e9c30ddfd6560a9edc1b4257ec28fd62ec4f"
+            ],
+            "index": "pypi",
+            "version": "==2.3.4"
+        },
+        "photobooth": {
+            "editable": true,
+            "path": "."
+        }
+    },
+    "develop": {}
+}
