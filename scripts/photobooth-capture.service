@@ -1,0 +1,14 @@
+[Unit]
+Description=Photobooth capture process
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3 photobooth/raspberry_pi.py
+WorkingDirectory=/home/corentin/photobooth/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=corentin
+
+[Install]
+WantedBy=multi-user.target
