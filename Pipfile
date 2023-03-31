@@ -5,8 +5,8 @@ name = "pypi"
 
 [packages]
 photobooth = {path = ".", editable = true}
-
 gphoto2 = "*"
+gpiozero = "*"
 
 [dev-packages]
 

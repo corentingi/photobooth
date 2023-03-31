@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "fd8631d67b7c1fab5f477f2781a2592c230f5c4764846a5eaa963b185fe19d44"
+            "sha256": "544451b0ac043166ee8e4b2f9afea5404fe6ac26f0a50d1a2fc849617b93fae6"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -17,6 +17,13 @@
         ]
     },
     "default": {
+        "colorzero": {
+            "hashes": [
+                "sha256:0e60d743a6b8071498a56465f7719c96a5e92928f858bab1be2a0d606c9aa0f8",
+                "sha256:e7d5a5c26cd0dc37b164ebefc609f388de24f8593b659191e12d85f8f9d5eb58"
+            ],
+            "version": "==2.0"
+        },
         "gphoto2": {
             "hashes": [
                 "sha256:0c440b21cbb7faadc50e2b7c9074bbb2ff20acd2547a00ac081371081d0cc99c",
@@ -34,9 +41,25 @@
             "index": "pypi",
             "version": "==2.3.4"
         },
+        "gpiozero": {
+            "hashes": [
+                "sha256:0eb95a9db372146813276f92de7f43c883a3e9fe69597fc3d29c04ef3d5d5f9e",
+                "sha256:9af00b90d4fa775aa1fc023363e4aa5539844a5b0c461be5ced5cfabba364d99"
+            ],
+            "index": "pypi",
+            "version": "==1.6.2"
+        },
         "photobooth": {
             "editable": true,
             "path": "."
+        },
+        "setuptools": {
+            "hashes": [
+                "sha256:257de92a9d50a60b8e22abfcbb771571fde0dbf3ec234463212027a4eeecbe9a",
+                "sha256:e728ca814a823bf7bf60162daf9db95b93d532948c4c0bea762ce62f60189078"
+            ],
+            "markers": "python_version >= '3.7'",
+            "version": "==67.6.1"
         }
     },
     "develop": {}
