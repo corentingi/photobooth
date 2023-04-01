@@ -1,45 +1,70 @@
+import asyncio
 from gpiozero import LED, Button
 from signal import pause
-from time import sleep
 
-from capture import capture_image
+from capture import Camera
 
 WAIT_BETWEEN_PHOTOS = 3
 
-button = Button(pin=2)
-leds = [
-    LED(pin=17),
-    LED(pin=27),
-    LED(pin=22),
-]
+button = Button(pin=15)
+led = LED(pin=14)
 
 
-def reset_leds():
-    for led in leds:
-        led.off()
+async def blink_led_and_wait() -> None:
+    led.blink(on_time=0.5, off_time=0.5, n=WAIT_BETWEEN_PHOTOS)
+    return asyncio.sleep(WAIT_BETWEEN_PHOTOS)
 
 
-def capture_3_photos():
-    paths = []
-
+async def capture_3_photos():
+    camera = Camera()
+    await camera.init()
+    local_paths = []
     try:
-        for i in range(0, 3):
-            leds[i].blink(on_time=0.5, off_time=0.5, n=WAIT_BETWEEN_PHOTOS)
-            sleep(WAIT_BETWEEN_PHOTOS)  # Wait X seconds
-            leds[i].on()
+        await blink_led_and_wait()
 
-            local_path = capture_image()
-            paths.append(local_path)
+        # Photo 1:
+        capture = await camera.capture_image()
+
+        local_path, _ = await asyncio.gather(
+            camera.save(capture),
+            blink_led_and_wait()
+        )
+        local_paths.append(local_path)
+
+        # Photo 2:
+        await camera.capture_image()
+        local_path, _ = await asyncio.gather(
+            camera.save(capture),
+            blink_led_and_wait()
+        )
+        local_paths.append(local_path)
+
+        # Photo 3:
+        await camera.capture_image()
+        local_path = await camera.save(capture)
+        local_paths.append(local_path)
     except Exception:
         pass
     finally:
-        reset_leds()
+        led.off()
+        await camera.exit()
+    return local_paths
 
-    print(paths)
+
+def on_button_pressed():
+    # Capture 3 photos
+    local_paths = asyncio.run(capture_3_photos())
+    print(local_paths)
+
+    # Process photos
+    pass
+
+    # Print final photo
+    pass
 
 
 if __name__ == "__main__":
-    reset_leds()
-    button.when_activated = capture_3_photos
+    led.off()
+    button.when_activated = on_button_pressed
     print('Ready. To start taking pictures, press on the button')
     pause()
