@@ -26,27 +26,31 @@ class Camera():
         self.camera = gp.Camera()
         self.camera.init()
 
+        # Prepare location
+        os.makedirs(self.folder, exist_ok=True)
+
     async def exit(self):
         if self.camera is None:
             return
         self.camera.exit()
 
     async def capture_image(self):
-        print('Capturing image')
+        logging.debug('Capturing image')
         return self.camera.capture(gp.GP_CAPTURE_IMAGE)
 
     async def save(self, capture):
-        print('Camera file path: {0}/{1}'.format(capture.folder, capture.name))
+        logging.debug('Camera file path: {0}/{1}'.format(capture.folder, capture.name))
         target_path = os.path.join(self.folder, capture.name)
 
-        print('Copying image to', target_path)
+        logging.debug('Copying image to', target_path)
         camera_file = self.camera.file_get(
             capture.folder,
             capture.name,
-            gp.GP_FILE_TYPE_NORMAL
+            gp.GP_FILE_TYPE_NORMAL,
         )
 
         camera_file.save(target_path)
+        return target_path
 
 
 async def async_capture_image() -> Path:
