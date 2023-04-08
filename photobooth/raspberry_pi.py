@@ -1,71 +1,60 @@
 import asyncio
-import logging
-from gpiozero import LED, Button
+from pathlib import Path
 from signal import pause
+from time import sleep
 
-from capture import Camera
+from gpiozero import LED, Button
 
-WAIT_BETWEEN_PHOTOS = 3
-
-button = Button(pin=17)
-led = LED(pin=27)
-
-
-async def blink_led_and_wait() -> None:
-    led.blink(on_time=0.5, off_time=0.5, n=WAIT_BETWEEN_PHOTOS)
-    await asyncio.sleep(WAIT_BETWEEN_PHOTOS)
-    return None
+from camera import Camera
+from capture import capture_multiple_photos
+from machine import PhotoBoothMachine
 
 
-async def capture_multiple_photos(count: int = 3):
-    logging.info("Capturing %s photos", count)
+WAIT_BETWEEN_IMAGES = 3
 
+
+class RaspberryPiPhotoBooth(PhotoBoothMachine):
     camera = Camera(folder='/home/corentin/photos')
-    await camera.init()
+    button = Button(pin=17)
+    led = LED(pin=27)
 
-    local_paths = []
-    try:
-        logging.info("Blinking led...")
-        await blink_led_and_wait()
+    def _notify_imminent_capture(self):
+        self.led.blink(on_time=0.5, off_time=0.5, n=WAIT_BETWEEN_IMAGES)
 
-        for i in range(0, count):
-            logging.info("Capturing photo %s...", i + 1)
-            capture = await camera.capture_image()
+    @PhotoBoothMachine.initialization.enter
+    def initialize(self):
+        self.button.when_activated = self.registered_input(pressed=True)
+        self.led.blink(on_time=0.2, off_time=0.2, n=3)
 
-            if i < count - 1:
-                logging.info("Blinking led and saving capture %s...", i)
-                _, local_path = await asyncio.gather(
-                    blink_led_and_wait(),
-                    camera.save(capture),
-                )
-            else:
-                logging.info("Saving capture %s...", i + 1)
-                local_path = await camera.save(capture)
+    @PhotoBoothMachine.capturing.enter
+    def capture_images(self):
+        captures = asyncio.run(
+            capture_multiple_photos(
+                count=3,
+                self_timer_seconds=WAIT_BETWEEN_IMAGES,
+                before_timer_callback=self._notify_imminent_capture,
+                exception_callback=self.led.off,
+                camera=self.camera,
+            )
+        )
+        self.captured(captures=captures)
 
-            local_paths.append(local_path)
-    except Exception:
-        raise
-    finally:
-        led.off()
-        await camera.exit()
-    return local_paths
+    @PhotoBoothMachine.processing.enter
+    def process_images(self):
+        print("Processing image")
+        sleep(0.5)
+        print("Saved processed image")
+        self.processed(processed_image=Path("/tmp/processed_image.jpeg"))
 
-
-def on_button_pressed():
-    logging.info("Button pressed")
-    # Capture 3 photos
-    local_paths = asyncio.run(capture_multiple_photos(count=3))
-    logging.debug("Paths:", local_paths)
-
-    # Process photos
-    pass
-
-    # Print final photo
-    pass
+    @PhotoBoothMachine.printing.enter
+    def print_processed_image(self):
+        print("Printing processed image")
+        sleep(0.5)
+        print("Printed")
+        self.printed()
 
 
 if __name__ == "__main__":
-    led.off()
-    button.when_activated = on_button_pressed
+    photo_booth = RaspberryPiPhotoBooth()
     print('Ready. To start taking pictures, press on the button')
     pause()

@@ -7,6 +7,7 @@ name = "pypi"
 photobooth = {path = ".", editable = true}
 gphoto2 = "*"
 gpiozero = "*"
+python-statemachine = "*"
 
 [dev-packages]
 

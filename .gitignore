@@ -1,2 +1,4 @@
 build
 photobooth.egg-info
+__pycache__
+*.pyc

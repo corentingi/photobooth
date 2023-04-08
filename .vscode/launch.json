@@ -1,0 +1,45 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "PyTest (run all tests)",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "photobooth/tests/",
+            ],
+            "cwd": "${workspaceFolder}",
+            "justMyCode": false
+        },
+        {
+            "name": "PyTest (current file)",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "${file}",
+            ],
+            "cwd": "${workspaceFolder}",
+            "justMyCode": false
+        },
+        {
+            "name": "Run simulation",
+            "type": "python",
+            "request": "launch",
+            "program": "photobooth/simulation.py",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "justMyCode": false
+        },
+        {
+            "name": "Run photobooth",
+            "type": "python",
+            "request": "launch",
+            "program": "photobooth/raspberry_pi.py",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "justMyCode": false
+        },
+    ]
+}

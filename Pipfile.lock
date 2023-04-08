@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "544451b0ac043166ee8e4b2f9afea5404fe6ac26f0a50d1a2fc849617b93fae6"
+            "sha256": "85fff754a2966c93e47e36d98a6b733f6190dd1051e2188bfcc6a1dea6d22904"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -52,6 +52,14 @@
         "photobooth": {
             "editable": true,
             "path": "."
+        },
+        "python-statemachine": {
+            "hashes": [
+                "sha256:90bb9ac523bf24ee2cd7b43c478f84a92ee38e2ced7d387186e15092ea6c77be",
+                "sha256:dd6cafe88fd5eb473afbe365d89c0ac009d71da3b615a5ebd2210c178dfa032b"
+            ],
+            "index": "pypi",
+            "version": "==2.0.0"
         },
         "setuptools": {
             "hashes": [

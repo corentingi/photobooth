@@ -1,56 +1,10 @@
 import asyncio
-import locale
+from collections.abc import Callable
 import logging
-import os
 from pathlib import Path
+from typing import List, Optional
 
-import gphoto2 as gp
-
-
-class Camera():
-    camera = None
-    folder: str
-
-    def __init__(self, folder='/tmp') -> None:
-        locale.setlocale(locale.LC_ALL, '')
-        logging.basicConfig(
-            format='%(levelname)s: %(name)s: %(message)s',
-            level=logging.WARNING,
-        )
-        self.folder = folder
-
-    async def init(self):
-        if self.camera is not None:
-            return
-        callback_obj = gp.check_result(gp.use_python_logging())
-        self.camera = gp.Camera()
-        self.camera.init()
-
-        # Prepare location
-        os.makedirs(self.folder, exist_ok=True)
-
-    async def exit(self):
-        if self.camera is None:
-            return
-        self.camera.exit()
-
-    async def capture_image(self):
-        logging.debug('Capturing image')
-        return self.camera.capture(gp.GP_CAPTURE_IMAGE)
-
-    async def save(self, capture):
-        logging.debug('Camera file path: {0}/{1}'.format(capture.folder, capture.name))
-        target_path = os.path.join(self.folder, capture.name)
-
-        logging.debug('Copying image to', target_path)
-        camera_file = self.camera.file_get(
-            capture.folder,
-            capture.name,
-            gp.GP_FILE_TYPE_NORMAL,
-        )
-
-        camera_file.save(target_path)
-        return target_path
+from camera import Camera
 
 
 async def async_capture_image() -> Path:
@@ -64,8 +18,53 @@ async def async_capture_image() -> Path:
     finally:
         await camera.exit()
 
-    return Path(local_path)
+    return local_path
 
 
 def capture_image() -> Path:
     return asyncio.run(async_capture_image())
+
+
+async def capture_multiple_photos(
+    count: int = 3,
+    self_timer_seconds: int = 3,
+    before_timer_callback: Optional[Callable[[], None]] = None,
+    exception_callback: Optional[Callable[[], None]] = None,
+    camera: Optional[Camera] = None,
+) -> List[Path]:
+    logging.info("Capturing %s photos", count)
+    if camera is None:
+        camera = Camera(folder='/tmp')
+    await camera.init()
+
+    local_paths = []
+    try:
+        logging.info("Blinking led...")
+        if before_timer_callback is not None:
+            before_timer_callback()
+        await asyncio.sleep(self_timer_seconds)
+
+        for i in range(0, count):
+            logging.info("Capturing photo %s...", i + 1)
+            capture = await camera.capture_image()
+
+            if i < count - 1:
+                logging.info("Blinking led and saving capture %s...", i)
+                if before_timer_callback is not None:
+                    before_timer_callback()
+                _, local_path = await asyncio.gather(
+                    asyncio.sleep(self_timer_seconds),
+                    camera.save(capture),
+                )
+            else:
+                logging.info("Saving capture %s...", i + 1)
+                local_path = await camera.save(capture)
+
+            local_paths.append(local_path)
+    except Exception:
+        raise
+    finally:
+        if exception_callback is not None:
+            exception_callback()
+        await camera.exit()
+    return local_paths
