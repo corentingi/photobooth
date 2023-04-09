@@ -41,5 +41,14 @@
             "cwd": "${workspaceFolder}",
             "justMyCode": false
         },
+        {
+            "name": "Run process images",
+            "type": "python",
+            "request": "launch",
+            "program": "photobooth/process.py",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "justMyCode": false
+        },
     ]
 }

@@ -26,7 +26,7 @@ class PhotoBoothMachine(StateMachine):
         return pressed
 
     def on_captured(self, captures: List[Path]):
-        self.captures = captures
+        self.images_to_process = captures
 
     def on_processed(self, processed_image: Path):
-        self.processed_image = processed_image
+        self.image_to_print = processed_image

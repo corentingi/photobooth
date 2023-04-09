@@ -8,6 +8,9 @@ photobooth = {path = ".", editable = true}
 gphoto2 = "*"
 gpiozero = "*"
 python-statemachine = "*"
+pillow = "*"
+numpy = "*"
+opencv-python = "*"
 
 [dev-packages]
 

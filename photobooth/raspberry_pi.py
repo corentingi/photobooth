@@ -1,13 +1,16 @@
 import asyncio
+import os
 from pathlib import Path
 from signal import pause
-from time import sleep
+from time import sleep, time
 
 from gpiozero import LED, Button
 
 from camera import Camera
 from capture import capture_multiple_photos
+from image_filters import BlackAndWhite, LevelImage
 from machine import PhotoBoothMachine
+from process import process_images
 
 
 WAIT_BETWEEN_IMAGES = 3
@@ -41,10 +44,16 @@ class RaspberryPiPhotoBooth(PhotoBoothMachine):
 
     @PhotoBoothMachine.processing.enter
     def process_images(self):
-        print("Processing image")
-        sleep(0.5)
-        print("Saved processed image")
-        self.processed(processed_image=Path("/tmp/processed_image.jpeg"))
+        file_name = str(int(time())) + ".jpg"
+        output_image_path = Path("/home/corentin/captures") / Path(file_name)
+        os.makedirs(output_image_path, exist_ok=True)
+        process_images(
+            captures=self.images_to_process,
+            output_path=output_image_path,
+            title_image=Path("/Users/cgitton/Desktop/photobooth/alo&coco.png"),
+            filters=[BlackAndWhite(), LevelImage()]
+        )
+        self.processed(processed_image=output_image_path)
 
     @PhotoBoothMachine.printing.enter
     def print_processed_image(self):
