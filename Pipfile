@@ -12,6 +12,7 @@ pillow = "*"
 numpy = "*"
 opencv-python = "*"
 pyyaml = "*"
+pydantic = "*"
 
 [dev-packages]
 

@@ -1,17 +1,22 @@
 ---
 camera:
-  delay: 3
+  delay: 0
   output_directory: /tmp/photobooth/captures
 processing:
   background:
-    color: "black"
-  filters:
-    - name: BlackAndWhite
-    - name: LevelImage
-      params:
-        level: 2
+    color: "white"
+  captures:
+    filters:
+      - name: LevelImage
+        params:
+          black: 0
+          white: 20
+    margin: 2
+  title:
+    image_path: null
+    filters:
+      - name: Inverted
   output_directory: /tmp/photobooth/processed
-  title_image: null
 gpio:
   led: 27
   button: 17

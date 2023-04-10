@@ -1,5 +1,10 @@
 from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel
 import yaml
+
+from photobooth.app.entities import PhotoMontageType
 
 
 def _merge_dicts(target, source):
@@ -10,31 +15,63 @@ def _merge_dicts(target, source):
             target[key] = value
 
 
-class Config():
-    _config = {}
-
-    def __init__(self):
+class ConfigFromFile(BaseModel):
+    @classmethod
+    def load(cls):
         config_files = [
-            "photobooth/app/configs/config_default.yml",
-            "photobooth/app/configs/config.yml",
+            Path("photobooth/app/configs/config_default.yml"),
+            Path("photobooth/app/configs/config.yml"),
         ]
 
+        config = {}
         for config_file in config_files:
-            self._load_file(Path(config_file))
+            if not config_file.is_file():
+                continue
+            with open(config_file) as fh:
+                _merge_dicts(
+                    config,
+                    yaml.load(fh, Loader=yaml.FullLoader),
+                )
 
-    def _load_file(self, file_name: Path):
-        if not file_name.is_file():
-            return
+        return cls.parse_obj(config)
 
-        with open(file_name) as fh:
-            config = yaml.load(fh, Loader=yaml.FullLoader)
 
-        _merge_dicts(self._config, config)
+class CameraConfig(BaseModel):
+    delay: int = 3
+    output_directory: Path = Path("/tmp/photobooth/captures")
 
-    def get(self, path, default=None):
-        config = self._config
-        for part in path.split("."):
-            if part not in config:
-                return default
-            config = config[part]
-        return config
+
+class FilterConfig(BaseModel):
+    name: str
+    params: Dict[str, Any] = {}
+
+
+class ProcessingConfig(BaseModel):
+    class BackgroundConfig(BaseModel):
+        color: str = "white"
+
+    class CaptureConfig(BaseModel):
+        correct_orientation: bool = False
+        filters: List[FilterConfig] = []
+        margin: int = 5
+
+    class TitleConfig(BaseModel):
+        image_path: Optional[Path]
+        filters: List[FilterConfig] = []
+
+    template: PhotoMontageType = PhotoMontageType.STRIP_WITH_TITLE
+    background: BackgroundConfig
+    captures: CaptureConfig
+    title: TitleConfig
+    output_directory: Path = Path("/tmp/photobooth/processed")
+
+
+class GpioConfig(BaseModel):
+    button: int = 17
+    led: int = 27
+
+
+class PhotoBoothConfig(ConfigFromFile):
+    camera: CameraConfig
+    processing: ProcessingConfig
+    gpio: GpioConfig
