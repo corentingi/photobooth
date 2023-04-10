@@ -1,21 +1,17 @@
 from pathlib import Path
-from machine import PhotoBoothMachine
-from time import sleep
+import platform
+import subprocess
+import time
 
-from image_filters import BlackAndWhite, LevelImage
-from process import process_images
+from app.config import Config
+from machine import GenericPhotoBooth
 
 
-class SimulatedPhotoBooth(PhotoBoothMachine):
-    @PhotoBoothMachine.initialization.enter
-    def initialize(self):
-        self.initialized()
-
-    @PhotoBoothMachine.capturing.enter
-    def capture_images(self):
+class SimulatedPhotoBooth(GenericPhotoBooth):
+    def on_enter_capturing(self):
         for i in range(0, 3):
-            print("Capturing image %s" % (i + 1))
-            sleep(0.5)
+            print("Capturing fake image %s" % (i + 1))
+            time.sleep(self.config.get("delay", 0.5))
 
         captures = [
             Path("/Users/cgitton/Desktop/photobooth/IMG_0101.CR2"),
@@ -25,29 +21,16 @@ class SimulatedPhotoBooth(PhotoBoothMachine):
         print(captures)
         self.captured(captures=captures)
 
-    @PhotoBoothMachine.processing.enter
-    def process_captures(self):
-        print("Processing image")
-        output_image_path = Path("/Users/cgitton/Downloads/montage.jpg")
-        process_images(
-            captures=self.images_to_process,
-            output_path=output_image_path,
-            title_image=Path("/Users/cgitton/Desktop/photobooth/alo&coco.png"),
-            filters=[BlackAndWhite(), LevelImage()]
-        )
-        print("Saved processed image")
-        self.processed(processed_image=output_image_path)
-
-    @PhotoBoothMachine.printing.enter
-    def print_processed_image(self):
-        print("Printing processed image")
-        print(self.image_to_print)
-        sleep(0.5)
-        print("Printed")
-        self.printed()
-
 
 if __name__ == "__main__":
-    photo_booth = SimulatedPhotoBooth()
+    photo_booth = SimulatedPhotoBooth(config=Config())
     photo_booth.registered_input(pressed=True)
+
+    print(photo_booth.image_to_print)
+
+    if platform.system() == 'Linux':
+        subprocess.call(['xdg-open', photo_booth.image_to_print])
+    if platform.system() == 'Darwin':
+        subprocess.call(['open', photo_booth.image_to_print])
+
     print("Finished")

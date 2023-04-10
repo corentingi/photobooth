@@ -11,6 +11,7 @@ python-statemachine = "*"
 pillow = "*"
 numpy = "*"
 opencv-python = "*"
+pyyaml = "*"
 
 [dev-packages]
 

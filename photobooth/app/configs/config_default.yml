@@ -1,0 +1,17 @@
+---
+camera:
+  delay: 3
+  output_directory: /tmp/photobooth/captures
+processing:
+  background:
+    color: "black"
+  filters:
+    - name: BlackAndWhite
+    - name: LevelImage
+      params:
+        level: 2
+  output_directory: /tmp/photobooth/processed
+  title_image: null
+gpio:
+  led: 27
+  button: 17

@@ -1,4 +1,5 @@
-build
-photobooth.egg-info
+/photobooth/app/configs/config.yml
 __pycache__
 *.pyc
+build
+photobooth.egg-info

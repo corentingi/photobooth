@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from typing import List, Optional
 
-from camera import Camera
+from app.camera import Camera
 
 
 async def async_capture_image() -> Path:

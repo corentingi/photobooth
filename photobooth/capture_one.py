@@ -1,7 +1,7 @@
 import platform
 import subprocess
 
-from capture import capture_image
+from app.capture import capture_image
 
 if __name__ == "__main__":
     local_path = capture_image()

@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, Optional
 from PIL import Image
 
-from image_filters import ImageFilter
+from app.image_filters import ImageFilter
 
 
 class PictureOrientation(enum.Enum):
@@ -167,6 +167,7 @@ def process_images(
     output_path: Path,
     title_image: Optional[Path],
     filters: List[ImageFilter] = None,
+    background_color: str = "white",
 ):
     images = []
     for capture in captures:
@@ -177,13 +178,15 @@ def process_images(
     if title_image:
         with Image.open(title_image) as title:
             title.load()
+    else:
+        title = None
 
     montage = assemble_images(
         images,
         montage_type=PhotoMontageType.STRIP_WITH_TITLE,
         title_image=title,
         filters=filters or [],
-        background_color="black",
+        background_color=background_color,
         margins_percent=4,
     )
     montage.save(output_path)
