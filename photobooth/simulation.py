@@ -14,9 +14,9 @@ class SimulatedPhotoBooth(GenericPhotoBooth):
             time.sleep(self.config.camera.delay)
 
         captures = [
-            Path("/Users/cgitton/Desktop/photobooth/IMG_0101.CR2"),
-            Path("/Users/cgitton/Desktop/photobooth/IMG_0102.CR2"),
-            Path("/Users/cgitton/Desktop/photobooth/IMG_0103.CR2"),
+            Path("/Users/cgitton/Desktop/photobooth/IMG_0101.tiff"),
+            Path("/Users/cgitton/Desktop/photobooth/IMG_0102.tiff"),
+            Path("/Users/cgitton/Desktop/photobooth/IMG_0103.tiff"),
         ]
         print(captures)
         self.captured(captures=captures)

@@ -64,6 +64,7 @@ class ProcessingConfig(BaseModel):
     captures: CaptureConfig
     title: TitleConfig
     output_directory: Path = Path("/tmp/photobooth/processed")
+    output_format: str = "jpg"
 
 
 class GpioConfig(BaseModel):

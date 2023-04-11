@@ -39,7 +39,10 @@ class GenericPhotoBooth(PhotoBoothMachine):
         self.captured(captures=captures)
 
     def on_enter_processing(self):
-        file_name = Path(str(int(time.time())) + ".jpg")
+        file_name = Path("%s.%s" % (
+            int(time.time()),
+            self.config.processing.output_format,
+        ))
         file_path = self.config.processing.output_directory / file_name
         processor = CaptureProcessor(settings=self.config.processing)
         processor.process(
