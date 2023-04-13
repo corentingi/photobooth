@@ -9,6 +9,7 @@ from app.capture import capture_multiple_photos
 from app.machine import PhotoBoothMachine
 from app.process import CaptureProcessor
 from app.config import PhotoBoothConfig
+from photobooth.app.printer import print_image
 
 
 class GenericPhotoBooth(PhotoBoothMachine):
@@ -59,9 +60,16 @@ class GenericPhotoBooth(PhotoBoothMachine):
         self.processed(processed_image=file_path)
 
     def on_enter_printing(self):
-        print("Printing processed image")
-        time.sleep(0.5)
-        print("Printed")
+        print("Printing processed image...")
+        if self.config.printing.enabled:
+            print_image(
+                self.image_to_print,
+                format=self.processor.template.format,
+                copies=self.config.printing.copies,
+            )
+        else:
+            print("Skipped")
+        time.sleep(self.config.printing.delay)
         self.printed()
 
 

@@ -79,8 +79,15 @@ class GpioConfig(BaseModel):
     led: int = 27
 
 
+class PrintingConfig(BaseModel):
+    enabled: bool = False
+    copies: int = 1
+    delay: int = 0
+
+
 class PhotoBoothConfig(ConfigFromFile):
     camera: CameraConfig
     processing: ProcessingConfig
     gpio: GpioConfig
+    printing: PrintingConfig
     presets: Dict[str, PresetConfig]
