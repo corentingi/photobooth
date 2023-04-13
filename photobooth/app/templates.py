@@ -6,11 +6,10 @@ from PIL import Image, ImageDraw
 
 from app.entities import PictureFormat
 from app.image_helpers import (
-    apply_filters,
     ensure_size,
     min_common_size,
 )
-from photobooth.app.entities import PictureOrientation
+from app.entities import PictureOrientation
 
 
 def _absolute_margin_from_size(margin: str, size: Tuple[int, int]) -> int:

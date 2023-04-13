@@ -18,6 +18,7 @@ class PhotoBoothMachine(StateMachine):
     captured = capturing.to(processing)
     processed = processing.to(printing)
     printed = printing.to(waiting)
+    failed = capturing.to(waiting)
 
     def __init__(self):
         super().__init__()

@@ -1,7 +1,9 @@
 import asyncio
+import os
 from pathlib import Path
 import time
 
+import gphoto2
 from gpiozero import LED, Button
 
 from app.camera import Camera
@@ -9,7 +11,7 @@ from app.capture import capture_multiple_photos
 from app.machine import PhotoBoothMachine
 from app.process import CaptureProcessor
 from app.config import PhotoBoothConfig
-from photobooth.app.printer import print_image
+from app.printer import print_image
 
 
 class GenericPhotoBooth(PhotoBoothMachine):
@@ -21,6 +23,10 @@ class GenericPhotoBooth(PhotoBoothMachine):
             settings=self.config.processing,
             presets=self.config.presets,
         )
+
+        # Prepare output directories
+        os.makedirs(self.config.camera.output_directory, exist_ok=True)
+        os.makedirs(self.config.processing.output_directory, exist_ok=True)
 
     def _before_timer_callback(self):
         pass
@@ -36,15 +42,19 @@ class GenericPhotoBooth(PhotoBoothMachine):
         if capture_count == "template":
             capture_count = self.processor.template.capture_count
 
-        captures = asyncio.run(
-            capture_multiple_photos(
-                count=capture_count,
-                self_timer_seconds=self.config.camera.delay,
-                before_timer_callback=self._before_timer_callback,
-                exception_callback=self._exception_callback,
-                camera=self.camera,
+        try:
+            captures = asyncio.run(
+                capture_multiple_photos(
+                    count=capture_count,
+                    self_timer_seconds=self.config.camera.delay,
+                    before_timer_callback=self._before_timer_callback,
+                    exception_callback=self._exception_callback,
+                    camera=self.camera,
+                )
             )
-        )
+        except gphoto2.GPhoto2Error:
+            self.failed()
+
         self.captured(captures=captures)
 
     def on_enter_processing(self):
@@ -75,9 +85,9 @@ class GenericPhotoBooth(PhotoBoothMachine):
 
 class RaspberryPiPhotoBooth(GenericPhotoBooth):
     def __init__(self, config: PhotoBoothConfig):
+        self.button = Button(pin=config.gpio.button)
+        self.led = LED(pin=config.gpio.led)
         super().__init__(config=config)
-        self.button = Button(led=config.gpio.button)
-        self.led = LED(led=config.gpio.led)
 
     def _before_timer_callback(self):
         self.led.blink(on_time=0.5, off_time=0.5, n=self.config.camera.delay)
@@ -86,6 +96,6 @@ class RaspberryPiPhotoBooth(GenericPhotoBooth):
         self.led.off()
 
     def on_enter_initialization(self):
-        self.button.when_activated = self.registered_input(pressed=True)
+        self.button.when_activated = lambda: self.registered_input(pressed=True)
         self.led.blink(on_time=0.2, off_time=0.2, n=3)
         self.initialized()

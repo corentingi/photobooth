@@ -1,0 +1,15 @@
+---
+camera:
+  delay: 1
+  output_directory: /home/corentin/photos/captures
+  count: template
+processing:
+  preset: BlackAndWhiteStripWithTitle
+  title:
+    image_path: /home/corentin/photobooth/titles/alo&coco.png
+  output_directory: /home/corentin/photos/processed
+presets: {}
+printing:
+  copies: 2
+  enabled: false
+  delay: 1

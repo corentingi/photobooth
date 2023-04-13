@@ -1,7 +1,7 @@
 from functools import cached_property
 from pathlib import Path
+from PIL import Image, ImageOps
 from typing import List
-from PIL import Image
 
 from app import image_filters, templates
 from app.config import ProcessingConfig, TemplateConfig
@@ -118,6 +118,9 @@ class CaptureProcessor:
         captures: List[Path],
     ):
         images = [load_image(path) for path in captures]
+
+        # Make sure images are in the right orientation
+        images = [ImageOps.exif_transpose(image) for image in images]
 
         if self.settings.correct_orientation:
             images = [ensure_orientation(image, self.template.orientation) for image in images]

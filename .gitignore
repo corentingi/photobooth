@@ -3,3 +3,6 @@ __pycache__
 *.pyc
 build
 photobooth.egg-info
+/captures
+/titles
+/processed
