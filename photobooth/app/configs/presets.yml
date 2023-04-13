@@ -1,0 +1,28 @@
+---
+presets:
+  RegularStripWithTitle:
+    template:
+      name: StripWithTitle
+      params:
+        background_color: white
+        margin: 2%
+    filters:
+      - name: AutoColorLevel
+    title_filters:
+      - name: Inverted
+  BlackAndWhiteStripWithTitle:
+    template:
+      name: StripWithTitle
+      params:
+        background_color: black
+        margin: 2%
+    filters:
+      - name: BlackAndWhite
+  BlackAndWhiteDoubleStripWithTitle:
+    template:
+      name: DoubleStripWithTitle
+      params:
+        background_color: black
+        margin: 2%
+    filters:
+      - name: BlackAndWhite

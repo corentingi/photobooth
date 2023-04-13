@@ -1,10 +1,8 @@
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel
 import yaml
-
-from photobooth.app.entities import PhotoMontageType
 
 
 def _merge_dicts(target, source):
@@ -19,7 +17,8 @@ class ConfigFromFile(BaseModel):
     @classmethod
     def load(cls):
         config_files = [
-            Path("photobooth/app/configs/config_default.yml"),
+            Path("photobooth/app/configs/default.yml"),
+            Path("photobooth/app/configs/presets.yml"),
             Path("photobooth/app/configs/config.yml"),
         ]
 
@@ -37,6 +36,7 @@ class ConfigFromFile(BaseModel):
 
 
 class CameraConfig(BaseModel):
+    count: Union[str, int] = "template"
     delay: int = 3
     output_directory: Path = Path("/tmp/photobooth/captures")
 
@@ -46,23 +46,30 @@ class FilterConfig(BaseModel):
     params: Dict[str, Any] = {}
 
 
+class TemplateConfig(BaseModel):
+    name: str
+    params: Dict[str, Any] = {}
+
+
+class PresetConfig(BaseModel):
+    template: TemplateConfig
+    filters: List[FilterConfig] = []
+    title_filters: List[FilterConfig] = []
+
+
 class ProcessingConfig(BaseModel):
     class BackgroundConfig(BaseModel):
         color: str = "white"
-
-    class CaptureConfig(BaseModel):
-        correct_orientation: bool = False
-        filters: List[FilterConfig] = []
-        margin: int = 5
 
     class TitleConfig(BaseModel):
         image_path: Optional[Path]
         filters: List[FilterConfig] = []
 
-    template: PhotoMontageType = PhotoMontageType.STRIP_WITH_TITLE
-    background: BackgroundConfig
-    captures: CaptureConfig
+    preset: Optional[str] = None
+    template: Optional[TemplateConfig] = None
+    filters: Optional[List[FilterConfig]] = []
     title: TitleConfig
+    correct_orientation: bool = False
     output_directory: Path = Path("/tmp/photobooth/processed")
     output_format: str = "jpg"
 
@@ -76,3 +83,4 @@ class PhotoBoothConfig(ConfigFromFile):
     camera: CameraConfig
     processing: ProcessingConfig
     gpio: GpioConfig
+    presets: Dict[str, PresetConfig]

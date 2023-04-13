@@ -1,0 +1,11 @@
+---
+camera:
+  delay: 0
+  output_directory: /tmp/photobooth/captures
+processing:
+  title:
+    image_path: null
+  output_directory: /tmp/photobooth/processed
+gpio:
+  led: 27
+  button: 17

@@ -16,6 +16,10 @@ class GenericPhotoBooth(PhotoBoothMachine):
         super().__init__()
         self.config = config
         self.camera = Camera(folder=config.camera.output_directory)
+        self.processor = CaptureProcessor(
+            settings=self.config.processing,
+            presets=self.config.presets,
+        )
 
     def _before_timer_callback(self):
         pass
@@ -27,9 +31,13 @@ class GenericPhotoBooth(PhotoBoothMachine):
         self.initialized()
 
     def on_enter_capturing(self):
+        capture_count = self.config.camera.count
+        if capture_count == "template":
+            capture_count = self.processor.template.capture_count
+
         captures = asyncio.run(
             capture_multiple_photos(
-                count=3,
+                count=capture_count,
                 self_timer_seconds=self.config.camera.delay,
                 before_timer_callback=self._before_timer_callback,
                 exception_callback=self._exception_callback,
@@ -44,8 +52,7 @@ class GenericPhotoBooth(PhotoBoothMachine):
             self.config.processing.output_format,
         ))
         file_path = self.config.processing.output_directory / file_name
-        processor = CaptureProcessor(settings=self.config.processing)
-        processor.process(
+        self.processor.process(
             captures=self.images_to_process,
             output_file_path=file_path,
         )
