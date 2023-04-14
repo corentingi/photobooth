@@ -83,6 +83,7 @@ class PrintingConfig(BaseModel):
     enabled: bool = False
     copies: int = 1
     delay: int = 0
+    destination: Optional[str] = None
 
 
 class PhotoBoothConfig(ConfigFromFile):

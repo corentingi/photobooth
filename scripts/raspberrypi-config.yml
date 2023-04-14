@@ -4,12 +4,14 @@ camera:
   output_directory: /home/corentin/photos/captures
   count: template
 processing:
-  preset: BlackAndWhiteStripWithTitle
+  preset: RegularDoubleStripWithTitle
   title:
     image_path: /home/corentin/photobooth/titles/alo&coco.png
   output_directory: /home/corentin/photos/processed
 presets: {}
 printing:
-  copies: 2
-  enabled: false
+  copies: 1
+  enabled: true
   delay: 1
+  destination: DS620_6x2_2_dnpwcm
+  # destination: DS620_4x6_dnpwcm

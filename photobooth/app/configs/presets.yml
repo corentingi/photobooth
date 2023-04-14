@@ -5,9 +5,22 @@ presets:
       name: StripWithTitle
       params:
         background_color: white
-        margin: 2%
+        margin: 5%
+    filters: []
+    title_filters:
+      - name: Inverted
+  RegularDoubleStripWithTitle:
+    template:
+      name: DoubleStripWithTitle
+      params:
+        background_color: white
+        margin: 5%
     filters:
-      - name: AutoColorLevel
+      - name: ColorLevel
+        params:
+          red: [0, 200]
+          green: [0, 220]
+          blue: [0, 200]
     title_filters:
       - name: Inverted
   BlackAndWhiteStripWithTitle:
@@ -15,7 +28,7 @@ presets:
       name: StripWithTitle
       params:
         background_color: black
-        margin: 2%
+        margin: 5%
     filters:
       - name: BlackAndWhite
   BlackAndWhiteDoubleStripWithTitle:
@@ -23,6 +36,6 @@ presets:
       name: DoubleStripWithTitle
       params:
         background_color: black
-        margin: 2%
+        margin: 5%
     filters:
       - name: BlackAndWhite

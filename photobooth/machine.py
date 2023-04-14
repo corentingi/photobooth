@@ -75,7 +75,7 @@ class GenericPhotoBooth(PhotoBoothMachine):
             print_image(
                 self.image_to_print,
                 format=self.processor.template.format,
-                copies=self.config.printing.copies,
+                settings=self.config.printing,
             )
         else:
             print("Skipped")

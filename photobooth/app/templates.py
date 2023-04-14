@@ -86,6 +86,7 @@ class DoubleStripWithTitle(MontageTemplate):
 
     background_color: str = "white"
     margin: str = "2%"
+    line: bool = False
 
     def process(self, images, title_image: Optional[Any] = None):
         single_strip = StripWithTitle(
@@ -98,7 +99,8 @@ class DoubleStripWithTitle(MontageTemplate):
         montage.paste(single_strip, (0, single_strip.size[1]))
 
         # Draw a cutting line
-        draw = ImageDraw.Draw(montage)
-        draw.line([(0, montage_size[1]/2), (montage_size[0], montage_size[1]/2)], fill="white", width=2)
+        if self.line:
+            draw = ImageDraw.Draw(montage)
+            draw.line([(0, montage_size[1]/2), (montage_size[0], montage_size[1]/2)], fill="white", width=2)
 
         return montage
