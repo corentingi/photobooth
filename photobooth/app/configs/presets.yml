@@ -15,14 +15,14 @@ presets:
       params:
         background_color: white
         margin: 5%
-    filters:
-      - name: ColorLevel
-        params:
-          red: [0, 200]
-          green: [0, 220]
-          blue: [0, 200]
-    title_filters:
-      - name: Inverted
+    # filters:
+    #   - name: ColorLevel
+    #     params:
+    #       red: [0, 200]
+    #       green: [0, 220]
+    #       blue: [0, 200]
+    # title_filters:
+    #   - name: Inverted
   BlackAndWhiteStripWithTitle:
     template:
       name: StripWithTitle

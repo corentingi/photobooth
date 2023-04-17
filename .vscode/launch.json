@@ -33,6 +33,15 @@
             "justMyCode": false
         },
         {
+            "name": "Run remote printer",
+            "type": "python",
+            "request": "launch",
+            "program": "photobooth/remote_printer.py",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "justMyCode": false
+        },
+        {
             "name": "Run photobooth",
             "type": "python",
             "request": "launch",

@@ -70,6 +70,7 @@ class ProcessingConfig(BaseModel):
     filters: Optional[List[FilterConfig]] = []
     title: TitleConfig
     correct_orientation: bool = False
+    tmp_directory: Path = Path("/tmp/photobooth/processing")
     output_directory: Path = Path("/tmp/photobooth/processed")
     output_format: str = "jpg"
 
@@ -86,9 +87,19 @@ class PrintingConfig(BaseModel):
     destination: Optional[str] = None
 
 
+class RemoteConfig(BaseModel):
+    host: Optional[str] = None
+    user: Optional[str] = None
+    local_fetch_directory: Path = Path("/tmp/photobooth/processed")
+    local_printed_directory: Path = Path("/tmp/photobooth/printed")
+    remote_output_directory: Path = Path("/tmp/photobooth/processed")
+    remote_printed_directory: Path = Path("/tmp/photobooth/printed")
+
+
 class PhotoBoothConfig(ConfigFromFile):
     camera: CameraConfig
     processing: ProcessingConfig
     gpio: GpioConfig
     printing: PrintingConfig
     presets: Dict[str, PresetConfig]
+    remote: RemoteConfig = RemoteConfig()

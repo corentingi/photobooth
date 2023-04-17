@@ -1,17 +1,20 @@
 ---
 camera:
-  delay: 1
+  delay: 3
   output_directory: /home/corentin/photos/captures
   count: template
 processing:
   preset: RegularDoubleStripWithTitle
   title:
-    image_path: /home/corentin/photobooth/titles/alo&coco.png
+    image_path: /home/corentin/photobooth/titles/gloria&bastien.png
+  tmp_directory: /home/corentin/photos/processing
   output_directory: /home/corentin/photos/processed
 presets: {}
 printing:
   copies: 1
-  enabled: true
+  enabled: false
   delay: 1
-  destination: DS620_6x2_2_dnpwcm
+  destination: ""
+  # destination: DNP_DP_DS620_builder_ML85  # share printer from laptop
+  # destination: DS620_6x2_2_dnpwcm
   # destination: DS620_4x6_dnpwcm

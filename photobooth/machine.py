@@ -3,7 +3,6 @@ import os
 from pathlib import Path
 import time
 
-import gphoto2
 from gpiozero import LED, Button
 
 from app.camera import Camera
@@ -26,6 +25,7 @@ class GenericPhotoBooth(PhotoBoothMachine):
 
         # Prepare output directories
         os.makedirs(self.config.camera.output_directory, exist_ok=True)
+        os.makedirs(self.config.processing.tmp_directory, exist_ok=True)
         os.makedirs(self.config.processing.output_directory, exist_ok=True)
 
     def _before_timer_callback(self):
@@ -52,7 +52,8 @@ class GenericPhotoBooth(PhotoBoothMachine):
                     camera=self.camera,
                 )
             )
-        except gphoto2.GPhoto2Error:
+        except Exception as e:
+            print(e)
             self.failed()
 
         self.captured(captures=captures)
@@ -62,11 +63,13 @@ class GenericPhotoBooth(PhotoBoothMachine):
             int(time.time()),
             self.config.processing.output_format,
         ))
-        file_path = self.config.processing.output_directory / file_name
+        tmp_file_path = self.config.processing.tmp_directory / file_name
         self.processor.process(
             captures=self.images_to_process,
-            output_file_path=file_path,
+            output_file_path=tmp_file_path,
         )
+        file_path = self.config.processing.output_directory / file_name
+        os.rename(tmp_file_path, file_path)
         self.processed(processed_image=file_path)
 
     def on_enter_printing(self):

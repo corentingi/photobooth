@@ -1,0 +1,52 @@
+---
+camera:
+  delay: 0
+  output_directory: /Users/cgitton/Desktop/photobooth/captures
+  count: template
+processing:
+  preset: CustomDoubleStripWithTitle
+  title:
+    image_path: /Users/cgitton/Desktop/photobooth/alo&coco.png
+  output_directory: /Users/cgitton/Desktop/photobooth/processed
+presets:
+  CustomDoubleStripWithTitle:
+    template:
+      name: DoubleStripWithTitle
+      params:
+        background_color: white
+        margin: 5%
+    filters:
+      - name: ColorLevel
+        params:
+          red: [0, 200]
+          green: [0, 220]
+          blue: [0, 200]
+    title_filters:
+      - name: Inverted
+  CustomStripWithTitle:
+    template:
+      name: StripWithTitle
+      params:
+        background_color: white
+        margin: 5%
+    filters:
+      # - name: BlackAndWhite
+      # - name: AutoColorLevel
+      #   threshold: 10
+      - name: ColorLevel
+        params:
+          red: [0, 190]
+          green: [30, 220]
+          blue: [30, 220]
+    title_filters:
+      - name: Inverted
+printing:
+  copies: 1
+  enabled: false
+  delay: 1
+  destination: Dai_Nippon_Printing_DP_DS620
+remote:
+  # host: 192.168.1.40
+  host: 192.168.1.72  # Chavannes
+  user: corentin
+  output_directory: /tmp/photobooth/processed
