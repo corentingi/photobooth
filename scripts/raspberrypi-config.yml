@@ -1,12 +1,12 @@
 ---
 camera:
-  delay: 3
+  delay: 5
   output_directory: /home/corentin/photos/captures
   count: template
 processing:
   preset: RegularDoubleStripWithTitle
   title:
-    image_path: /home/corentin/photobooth/titles/gloria&bastien.png
+    image_path: /home/corentin/photobooth/titles/alo&corentin_fiançailles.png
   tmp_directory: /home/corentin/photos/processing
   output_directory: /home/corentin/photos/processed
 presets: {}

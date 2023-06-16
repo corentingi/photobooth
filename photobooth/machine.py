@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import os
 from pathlib import Path
 import time
@@ -34,6 +35,9 @@ class GenericPhotoBooth(PhotoBoothMachine):
     def _exception_callback(self):
         pass
 
+    def _printing_callback(self):
+        pass
+
     def on_enter_initialization(self):
         self.initialized()
 
@@ -53,10 +57,10 @@ class GenericPhotoBooth(PhotoBoothMachine):
                 )
             )
         except Exception as e:
-            print(e)
+            logging.error(e)
             self.failed()
-
-        self.captured(captures=captures)
+        else:
+            self.captured(captures=captures)
 
     def on_enter_processing(self):
         file_name = Path("%s.%s" % (
@@ -82,6 +86,7 @@ class GenericPhotoBooth(PhotoBoothMachine):
             )
         else:
             print("Skipped")
+        self._printing_callback()
         time.sleep(self.config.printing.delay)
         self.printed()
 
@@ -97,6 +102,10 @@ class RaspberryPiPhotoBooth(GenericPhotoBooth):
 
     def _exception_callback(self):
         self.led.off()
+
+    def _printing_callback(self):
+        if self.config.printing.delay:
+            self.led.blink(on_time=0.1, off_time=0.1, n=self.config.printing.delay * 5)
 
     def on_enter_initialization(self):
         self.button.when_activated = lambda: self.registered_input(pressed=True)

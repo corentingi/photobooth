@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 import shutil
-from signal import pause
 import subprocess
 from time import sleep
 import glob
