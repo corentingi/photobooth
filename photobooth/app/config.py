@@ -90,6 +90,7 @@ class PrintingConfig(BaseModel):
 class RemoteConfig(BaseModel):
     host: Optional[str] = None
     user: Optional[str] = None
+    delay: int = 0
     local_fetch_directory: Path = Path("/tmp/photobooth/processed")
     local_printed_directory: Path = Path("/tmp/photobooth/printed")
     remote_output_directory: Path = Path("/tmp/photobooth/processed")
