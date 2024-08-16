@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "PyTest (run all tests)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "pytest",
             "args": [
@@ -14,7 +14,7 @@
         },
         {
             "name": "PyTest (current file)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "pytest",
             "args": [
@@ -25,7 +25,7 @@
         },
         {
             "name": "Run simulation",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "photobooth/simulation.py",
             "args": [],
@@ -34,7 +34,7 @@
         },
         {
             "name": "Run remote printer",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "photobooth/remote_printer.py",
             "args": [],
@@ -43,7 +43,7 @@
         },
         {
             "name": "Run photobooth",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "photobooth/raspberry_pi.py",
             "args": [],
@@ -52,7 +52,7 @@
         },
         {
             "name": "Run process images",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "photobooth/process.py",
             "args": [],

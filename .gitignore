@@ -1,6 +1,25 @@
-/photobooth/app/configs/config.yml
-__pycache__
+# IDE
+.vscode
+!.vscode/launch.json
+
+# OS
+.DS_Store
+
+# Python
+__pycache__/
 *.pyc
+.mypy_cache
+.pytest_cache
+
+# Virtual Environment
+.venv/
+
+# Environment
+.env.local
+.env.*.local
+
+# Application
+/photobooth/app/configs/config.yml
 build
 photobooth.egg-info
 /captures
