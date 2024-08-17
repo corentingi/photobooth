@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "photobooth"
+version = "0.1.0"
+description = ""
+authors = ["Corentin Gitton <corentin.gitton@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+gphoto2 = "^2.5.0"
+gpiozero = "^2.0.1"
+python-statemachine = "^2.3.4"
+pillow = "^10.4.0"
+numpy = "^2.0.1"
+opencv-python = "^4.10.0.84"
+pyyaml = "^6.0.2"
+pydantic = "^2.8.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

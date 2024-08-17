@@ -2,20 +2,30 @@
 
 ## Setup
 
+Install gphoto2 before anything else :
+```bash
+# Ubuntu / Debian
+apt install gphoto2
+
+# MacOS
+brew install gphoto2
 ```
-pipenv sync --dev
+
+Install python dependencies
+```bash
+poetry install
 ```
 
 ## Usage
 
 To test capturing one picture use the following command:
-```
-pipenv run python photobooth/capture_one.py
+```bash
+poetry run python photobooth/capture_one.py
 ```
 
 To start the raspberry pi process:
-```
-pipenv run python photobooth/raspberry_pi.py
+```bash
+poetry run python photobooth/raspberry_pi.py
 ```
 
 ## Warning
