@@ -1,0 +1,14 @@
+[Unit]
+Description=Photobooth capture process
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3 photobooth/raspberry_pi.py
+WorkingDirectory={{ photobooth_app_path }}
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User={{ ansible_user }}
+
+[Install]
+WantedBy=multi-user.target

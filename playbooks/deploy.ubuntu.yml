@@ -1,0 +1,86 @@
+---
+
+- name: Install dependencies
+  hosts: all
+
+  tasks:
+    - name: Ensure photobooth app directory exists
+      ansible.builtin.file:
+        dest: "{{ photobooth_app_path }}"
+        state: directory
+
+    - name: Ensure photobooth media directory exists
+      ansible.builtin.file:
+        dest: "{{ photobooth_media_path }}"
+        state: directory
+
+    - name: Ensure photobooth app is installed
+      ansible.builtin.synchronize:
+        src: "{{ playbook_dir }}/.."
+        dest: "{{ photobooth_app_path }}/"
+        owner: false
+        delete: yes
+        rsync_opts:
+          - '--exclude=".git"'
+          - '--exclude="captures"'
+          - '--exclude="processed"'
+          - '--exclude="playbooks"'
+          - '--exclude="**/__pycache__"'
+          - '--exclude="photobooth/app/configs/config.yml"'
+
+    - name: Ensure photobooth app owner
+      ansible.builtin.file:
+        dest: "{{ photobooth_app_path }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        recurse: yes
+
+    - name: Ensure photobooth config file is installed
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/templates/config.yml.j2"
+        dest: "{{ photobooth_app_path }}/photobooth/app/configs/config.yml"
+        backup: yes
+
+    - name: Install app dependencies
+      apt:
+        name:
+          - pkg-config
+          - python3-poetry
+          - python3-opencv
+          - libgphoto2-dev
+          - python3-dev  # NumPy
+          - libatlas-base-dev  # NumPy
+        state: present
+      become: yes
+
+    # - name: Install poetry
+    #   community.general.pipx:
+    #     name: poetry
+    #     state: present
+
+    - name: Install python dependencies
+      ansible.builtin.shell:
+        cmd: poetry install
+        chdir: "{{ photobooth_app_path }}"
+
+    - name: Install photobooth-capture systemd service
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/templates/photobooth-capture.service.j2"
+        dest: "/etc/systemd/system/photobooth-capture.service"
+        mode: '0644'
+      become: yes
+      notify:
+        - Reload systemd
+        - Restart photobooth-capture
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: yes
+      become: yes
+
+    - name: Restart photobooth-capture
+      service:
+        name: photobooth-capture
+        state: restarted
+      become: yes

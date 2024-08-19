@@ -1,0 +1,20 @@
+---
+camera:
+  delay: 5
+  output_directory: "{{ photobooth_media_path }}/captures"
+  count: template
+processing:
+  preset: RegularDoubleStripWithTitle
+  title:
+    image_path: "{{ photobooth_title_image_path }}"
+  tmp_directory: "{{ photobooth_media_path }}/processing"
+  output_directory: "{{ photobooth_media_path }}/processed"
+presets: {}
+printing:
+  copies: 1
+  enabled: "{{ photobooth_printing_destination is defined }}"
+  delay: 1
+  destination: "{{ photobooth_printing_destination | default('') }}"
+  # destination: DNP_DP_DS620_builder_ML85  # share printer from laptop
+  # destination: DS620_6x2_2_dnpwcm
+  # destination: DS620_4x6_dnpwcm

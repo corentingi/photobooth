@@ -1,0 +1,84 @@
+---
+
+- name: Install dependencies
+  hosts: all
+  become: true
+
+  tasks:
+    # - name: Disable cloud init
+    #   ansible.builtin.file:
+    #     dest: /etc/cloud/cloud-init.disabled
+    #     state: touch
+    #     owner: root
+    #     group: root
+    #     mode: '0644'
+
+    - name: Install required packages
+      apt:
+        name:
+          - vim
+          - git
+          - htop
+          - make
+          - python3-pip
+          - python3-lgpio  # Working with GPIO
+          - rpi.gpio-common  # GPIO configuration
+          - gphoto2  # CLI for Camera control (not for python control)
+          - cups  # Common Unix Printing System
+          # - autoconf
+          # - libltdl-dev
+          # - libusb-dev
+          # - libexif-dev
+          # - libpopt-dev
+          # - libxml2-dev
+          # - libjpeg-dev
+          # - libgd-dev
+          # - gettext
+          # - autopoint
+        state: present
+        update_cache: yes
+      tags: [apt, setup]
+
+    - name: Add user to dialout group
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: dialout
+        append: yes
+      tags: [setup]
+
+    # - name: Setup network with netplan
+    #   ansible.builtin.template:
+    #     src: templates/netplan.yml.j2
+    #     dest: /etc/netplan/01-network-config.yaml
+    #     owner: root
+    #     group: root
+    #     mode: '0644'
+    #     backup: yes
+    #   notify: Apply netplan
+    #   tags: netplan
+
+    # - name: Setup WPA supplicant networks configuration
+    #   ansible.builtin.blockinfile:
+    #     path: /etc/wpa_supplicant/wpa_supplicant.conf
+    #     state: present
+    #     block: |
+    #       {% for item in wpa_supplicant_networks %}
+    #       network={
+    #           {% for key, value in item.items() %}
+    #           {{ key }}="{{ value }}"
+    #           {% endfor %}
+    #       }
+    #       {% endfor %}
+    #   when: wpa_supplicant_networks is defined
+    #   notify: Restart wpa_supplicant
+    #   tags: wpa_supplicant
+
+  handlers:
+    - name: Restart wpa_supplicant
+      service:
+        name: wpa_supplicant
+        state: restarted
+
+    - name: Apply netplan
+      ansible.builtin.command: netplan apply
+      tags: netplan

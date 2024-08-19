@@ -1,0 +1,18 @@
+---
+
+- name: Dump photos from remote photobooth
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Ensure local photobooth media directory exists
+      ansible.builtin.file:
+        dest: ~/photobooth_media/
+        state: directory
+      delegate_to: localhost
+
+    - name: Dump all media files from remote photobooth
+      ansible.posix.synchronize:
+        mode: pull
+        src: "{{ photobooth_media_path }}"
+        dest: "~/photobooth_media/{{ inventory_hostname }}"

@@ -1,0 +1,69 @@
+---
+
+- name: Install dependencies
+  hosts: all
+
+  tasks:
+    - name: Ensure photobooth app directory exists
+      ansible.builtin.file:
+        dest: "{{ photobooth_app_path }}"
+        state: directory
+
+    - name: Ensure photobooth media directory exists
+      ansible.builtin.file:
+        dest: "{{ photobooth_media_path }}"
+        state: directory
+
+    - name: Ensure photobooth app is installed
+      ansible.builtin.synchronize:
+        src: "{{ playbook_dir }}/.."
+        dest: "{{ photobooth_app_path }}/"
+        owner: false
+        delete: yes
+        rsync_opts:
+          - '--exclude=".git"'
+          - '--exclude="captures"'
+          - '--exclude="processed"'
+          - '--exclude="playbooks"'
+          - '--exclude="**/__pycache__"'
+          - '--exclude="photobooth/app/configs/config.yml"'
+      notify: Restart photobooth-capture
+      tags: [app]
+
+    - name: Ensure photobooth config file is installed
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/templates/config.yml.j2"
+        dest: "{{ photobooth_app_path }}/photobooth/app/configs/config.yml"
+        backup: yes
+      notify: Restart photobooth-capture
+      tags: [app]
+
+    - name: Ensure photobooth app owner
+      ansible.builtin.file:
+        dest: "{{ photobooth_app_path }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        recurse: yes
+      tags: [app]
+
+    - name: Install photobooth-capture systemd service
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/templates/photobooth-capture.service.j2"
+        dest: "/etc/systemd/system/photobooth-capture.service"
+        mode: '0644'
+      become: yes
+      notify:
+        - Reload systemd
+        - Restart photobooth-capture
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: yes
+      become: yes
+
+    - name: Restart photobooth-capture
+      service:
+        name: photobooth-capture
+        state: restarted
+      become: yes

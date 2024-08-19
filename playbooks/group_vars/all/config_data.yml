@@ -1,0 +1,6 @@
+---
+
+photobooth_app_path: /home/{{ ansible_user }}/photobooth
+photobooth_media_path: /home/{{ ansible_user }}/photos
+photobooth_title_image_path: "{{ photobooth_app_path }}/titles/wedding_alois_corentin.png"
+# photobooth_printing_destination: DS620_6x2_2_dnpwcm
