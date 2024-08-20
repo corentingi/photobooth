@@ -14,7 +14,7 @@ presets:
       name: DoubleStripWithTitle
       params:
         background_color: white
-        margin: 10%
+        margin: 8%
     # filters:
     #   - name: ColorLevel
     #     params:

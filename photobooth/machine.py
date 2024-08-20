@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from math import sqrt
 import os
 from pathlib import Path
 import time
@@ -30,6 +31,9 @@ class GenericPhotoBooth(PhotoBoothMachine):
         os.makedirs(self.config.processing.output_directory, exist_ok=True)
 
     def _before_timer_callback(self):
+        time.sleep(self.config.camera.delay)
+
+    def _capture_callback(self):
         pass
 
     def _exception_callback(self):
@@ -50,8 +54,9 @@ class GenericPhotoBooth(PhotoBoothMachine):
             captures = asyncio.run(
                 capture_multiple_photos(
                     count=capture_count,
-                    self_timer_seconds=self.config.camera.delay,
+                    self_timer_seconds=0, # self.config.camera.delay
                     before_timer_callback=self._before_timer_callback,
+                    capture_callback=self._capture_callback,
                     exception_callback=self._exception_callback,
                     camera=self.camera,
                 )
@@ -85,7 +90,7 @@ class GenericPhotoBooth(PhotoBoothMachine):
                 settings=self.config.printing,
             )
         else:
-            print("Skipped")
+            print("Skipped printing")
         self._printing_callback()
         time.sleep(self.config.printing.delay)
         self.printed()
@@ -98,7 +103,18 @@ class RaspberryPiPhotoBooth(GenericPhotoBooth):
         super().__init__(config=config)
 
     def _before_timer_callback(self):
-        self.led.blink(on_time=0.5, off_time=0.5, n=self.config.camera.delay)
+        # Blink the LED faster when the timer is about to end
+        self.led.off()
+        periods = [0.5, 0.4, 0.3, 0.25, 0.2, 0.15, 0.1]
+        start_time = time.time()
+        blink_count = 0
+        while time.time() - start_time < self.config.camera.delay:
+            period = periods[min(blink_count, len(periods) - 1)]
+            self.led.blink(on_time=period, off_time=period, n=1, background=False)
+            blink_count += 1
+
+    def _capture_callback(self):
+        self.led.blink(on_time=1, off_time=0, n=1)
 
     def _exception_callback(self):
         self.led.off()
@@ -106,6 +122,8 @@ class RaspberryPiPhotoBooth(GenericPhotoBooth):
     def _printing_callback(self):
         if self.config.printing.delay:
             self.led.blink(on_time=0.1, off_time=0.1, n=self.config.printing.delay * 5)
+        else:
+            self.led.blink(on_time=0.1, off_time=0.1, n=5)
 
     def on_enter_initialization(self):
         self.button.when_activated = lambda: self.registered_input(pressed=True)

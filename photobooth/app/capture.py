@@ -29,6 +29,7 @@ async def capture_multiple_photos(
     count: int = 3,
     self_timer_seconds: int = 3,
     before_timer_callback: Optional[Callable[[], None]] = None,
+    capture_callback: Optional[Callable[[], None]] = None,
     exception_callback: Optional[Callable[[], None]] = None,
     camera: Optional[Camera] = None,
 ) -> List[Path]:
@@ -46,6 +47,8 @@ async def capture_multiple_photos(
 
         for i in range(0, count):
             logging.info("Capturing photo %s...", i + 1)
+            if capture_callback is not None:
+                capture_callback()
             capture = await camera.capture_image()
 
             if i < count - 1:
